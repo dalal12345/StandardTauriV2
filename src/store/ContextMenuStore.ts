@@ -1,8 +1,21 @@
-import { ContextMenuState } from "@/interface/store/IContextMenuStore";
 import { create } from "zustand";
 
-export const useContextMenuStore = create<ContextMenuState>((set) => ({
+interface IContextMenuState {
+  contextMenuVisible: boolean;
+  contextMenuPosition: { x: number; y: number };
+  setContextMenuVisible: (visible: boolean) => void;
+  setContextMenuPosition: (position: { x: number; y: number }) => void;
+  toggleContextMenu: () => void;
+}
+
+export const useContextMenuStore = create<IContextMenuState>((set) => ({
   contextMenuVisible: false,
-  setContextMenuVisible: (status: boolean) =>
-    set({ contextMenuVisible: status }),
+  contextMenuPosition: { x: 0, y: 0 },
+  
+  setContextMenuVisible: (visible) => set({ contextMenuVisible: visible }),
+  
+  setContextMenuPosition: (position) => set({ contextMenuPosition: position }),
+  
+  toggleContextMenu: () =>
+    set((state) => ({ contextMenuVisible: !state.contextMenuVisible })),
 }));

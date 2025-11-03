@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import Home from "./routes/Home";
+import Info from "./routes/Info";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import "@fontsource-variable/inter";
 import Settings from "./routes/Settings";
@@ -21,6 +22,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route
               index
               element={<Home />}
+            />
+            <Route
+              path="info"
+              element={<Info />}
             />
             <Route
               path="settings"

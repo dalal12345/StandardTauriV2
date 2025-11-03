@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import "./App.css";
-import { useApplicationStore } from "./store/ApplicationStore";
-import { useContextMenuStore } from "./store/ContextMenuStore";
+import { useContextMenuStore } from "@/store/ContextMenuStore";
 import useOsInfoStore from "./store/OsInfoStore";
 import useThemeStore from "./store/ThemeStore";
 import clsx from "clsx";
-import MenuBar from "./components/menuBar/MenuBar";
+import Sidebar from "./components/navigation/Sidebar";
 import { Outlet } from "react-router-dom";
 import ContextMenuComponent from "./components/contextMenu/ContextMenuComponent";
 
@@ -20,13 +19,6 @@ function App() {
   );
   const setContextMenuVisible = useContextMenuStore(
     (state) => state.setContextMenuVisible
-  );
-  const menuBarVisible = useApplicationStore((state) => state.menuBarVisible);
-  const setMenuBarVisible = useApplicationStore(
-    (state) => state.setMenuBarVisible
-  );
-  const checkApplicationUpdate = useApplicationStore(
-    (state) => state.checkApplicationUpdate
   );
 
   useEffect(() => {
@@ -51,14 +43,9 @@ function App() {
   }, [dark]);
 
   useEffect(() => {
-    checkApplicationUpdate();
-  }, []);
-
-  useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
       setContextMenuVisible(!contextMenuVisible);
-      if (menuBarVisible) setMenuBarVisible(false);
     };
     window.addEventListener("contextmenu", handleContextMenu);
     return () => window.removeEventListener("contextmenu", handleContextMenu);
@@ -67,15 +54,24 @@ function App() {
   return (
     <div
       className={clsx(
-        "grid min-h-screen bg-white text-black dark:bg-zinc-900 dark:text-white transition-colors pt-10 max-h-[100vh] select-none",
+        "min-h-screen bg-white text-black dark:bg-zinc-900 dark:text-white transition-colors select-none",
         {
           "custom-scrollbar": !isMobileOS,
         }
       )}
     >
-      {" "}
-      <MenuBar />
-      <Outlet />
+      <Sidebar />
+      
+      {/* Main Content Area */}
+      <main
+        className={clsx(
+          "transition-all duration-300 min-h-screen p-6",
+          "ml-16" // Always leave space for sidebar (compact: 64px)
+        )}
+      >
+        <Outlet />
+      </main>
+      
       <ContextMenuComponent />
     </div>
   );

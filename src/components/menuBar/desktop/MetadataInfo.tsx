@@ -2,36 +2,29 @@ import { useApplicationStore } from "@/store/ApplicationStore";
 import { Download } from "lucide-react";
 
 export default function MetadataInfo() {
-  const metadataInformation = useApplicationStore(
-    (state) => state.metadataInformation
-  );
+  const updateMetadata = useApplicationStore((state) => state.updateMetadata);
 
-  const applicationVersion = useApplicationStore(
-    (state) => state.applicationVersion
-  );
-
-  const onlineApplicationVersion = useApplicationStore(
-    (state) => state.onlineApplicationVersion
-  );
-
-  if (!metadataInformation) return;
+  if (!updateMetadata) return null;
+  
   return (
     <div className="w-40 sm:w-60 md:w-80 p-2 grid gap-2">
-      <h1>Current : {applicationVersion}</h1>
+      <h1>Current : {updateMetadata.application.version.current}</h1>
       <h1>
-        Availabel :{" "}
-        <span className="text-red-600">{onlineApplicationVersion}</span>
+        Available :{" "}
+        <span className="text-red-600">{updateMetadata.application.version.online}</span>
       </h1>
 
-      <a
-        target="_blank"
-        href={metadataInformation["release_url"]}
-        className="flex gap-2 bg-green-600 rounded-lg p-2"
-      >
-        {" "}
-        <Download></Download>
-        Download
-      </a>
+      {updateMetadata.application.updateUrl && (
+        <a
+          target="_blank"
+          href={updateMetadata.application.updateUrl}
+          className="flex gap-2 bg-green-600 rounded-lg p-2"
+        >
+          {" "}
+          <Download></Download>
+          Download
+        </a>
+      )}
     </div>
   );
 }

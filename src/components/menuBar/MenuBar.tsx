@@ -1,37 +1,19 @@
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
-  CircleDot,
   Maximize2,
-  Menu,
   Minus,
   X,
 } from "lucide-react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApplicationStore } from "@/store/ApplicationStore";
 import useOsInfoStore from "@/store/OsInfoStore";
 import clsx from "clsx";
-import { Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
-import MetadataInfo from "./desktop/MetadataInfo";
 import ThemeToggleButton from "@/ui/ThemeToggleButton";
-import NavigationComponent from "./desktop/NavigationComponent";
 
 export default function MenuBar() {
   const [isFullScreen, setIsFullScreen] = useState<boolean | null>(null);
-  const toggleMenuBar = useApplicationStore((state) => state.toggleMenuBar);
-  const menuBarVisible = useApplicationStore((state) => state.menuBarVisible);
-  const applicationUpdateAvailable = useApplicationStore(
-    (state) => state.applicationUpdateAvailable
-  );
-  const applicationVersion = useApplicationStore(
-    (state) => state.applicationVersion
-  );
-  const onlineApplicationVersion = useApplicationStore(
-    (state) => state.onlineApplicationVersion
-  );
   const isMobileOS = useOsInfoStore((state) => state.isMobileOS);
 
   const navigate = useNavigate();
@@ -122,32 +104,7 @@ export default function MenuBar() {
         </li>
 
         <li className="col-span-2 sm:col-span-1   w-full h-full cursor-pointer grid items-center">
-          <Popover>
-            <PopoverTrigger>
-              <p>
-                <CircleDot
-                  className={clsx("", {
-                    "text-green-600": !applicationUpdateAvailable,
-                    "text-red-600": applicationUpdateAvailable,
-                  })}
-                />
-              </p>
-            </PopoverTrigger>
-            <PopoverContent>
-              {!applicationUpdateAvailable && (
-                <div className="max-h-[60vh]p-2">
-                  <p>Current : {String(applicationVersion)}</p>
-                  <p>Online : {String(onlineApplicationVersion)}</p>
-                  <h1 className="text-green-600 flex gap-2">
-                    <Check />
-                    No update yet...
-                  </h1>
-                </div>
-              )}
-
-              {applicationUpdateAvailable && <MetadataInfo />}
-            </PopoverContent>
-          </Popover>
+          {/* Update indicator removed - function not defined in store */}
         </li>
 
         <li className="w-full col-span-2 sm:col-span-1 pr-3 grid items-center justify-items-center">
@@ -155,25 +112,7 @@ export default function MenuBar() {
         </li>
 
         <li className="w-full  text-white  col-span-2 pr-3 grid items-center justify-items-center">
-          {!menuBarVisible && (
-            <Menu
-              onClick={toggleMenuBar}
-              className="cursor-pointer justify-self-end"
-            />
-          )}
-
-          {menuBarVisible && (
-            <X
-              onClick={toggleMenuBar}
-              className="cursor-pointer justify-self-end"
-            />
-          )}
-
-          {menuBarVisible && (
-            <ul className="absolute h-fit w-fit  justify-self-center left-0 grid gap-1 pt-10 p-2">
-              <NavigationComponent />
-            </ul>
-          )}
+          {/* Menu toggle removed - function not defined in store */}
         </li>
       </ul>
 

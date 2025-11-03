@@ -5,15 +5,28 @@ import {
 } from "@/interface/metadata/UpdateInterface";
 import { IRuntimeDependency, EDependencyStatus } from "@/interface/metadata/DependencyInterface";
 import { addToast } from "@heroui/react";
-import { getVersion } from "@tauri-apps/api/app";
+import { getVersion, getName } from "@tauri-apps/api/app";
 import { create } from "zustand";
 import { checkDependencyUpdate, compareVersions } from "@/utils/DependencyDetector";
 
 export const useApplicationStore = create<IApplicationState>((set, get) => ({
+  appName: null,
+  appVersion: null,
   updateMetadata: null,
   isCheckingUpdate: false,
   updateCheckError: null,
   lastUpdateCheck: null,
+
+  fetchAppInfo: async () => {
+    try {
+      const name = await getName();
+      const version = await getVersion();
+      set({ appName: name.toUpperCase(), appVersion: version });
+    } catch (error) {
+      console.error("Failed to fetch app info:", error);
+      set({ appName: "APP", appVersion: "0.0.0" });
+    }
+  },
 
   checkForUpdates: async () => {
     const store = get();
