@@ -1,20 +1,14 @@
+import { IRuntimeUpdateState } from "../metadata/UpdateInterface";
 
-export interface ApplicationState {
-  menuBarVisible: boolean;
-  setMenuBarVisible: (status: boolean) => void;
-  toggleMenuBar: () => void;
-  applicationVersion: string;
-  setApplicationVersion: (version: string) => void;
-  onlineApplicationVersion: string;
-  setOnlineApplicationVersion: (version: string) => void;
-  applicationUpdateAvailable: boolean;
-  setApplicationUpdateAvailable: (status: boolean) => void;
-  applicationUpdateCheckError: boolean;
-  setApplicationUpdateCheckError: (status: boolean) => void;
-  applicationUpdateChecked: boolean;
-  setApplicationUpdateChecked: (status: boolean) => void;
-  checkApplicationUpdate: () => Promise<void>;
-  metadataUrl: string;
-  metadataInformation: MetadataState | null;
-  setMetadataInformation: (metadata: null | MetadataState) => void;
+export interface IApplicationState {
+  updateMetadata: IRuntimeUpdateState | null;
+  isCheckingUpdate: boolean;
+  updateCheckError: string | null;
+  lastUpdateCheck: Date | null;
+
+  checkForUpdates: () => Promise<void>;
+  setUpdateMetadata: (metadata: IRuntimeUpdateState | null) => void;
+  setIsCheckingUpdate: (status: boolean) => void;
+  setUpdateCheckError: (error: string | null) => void;
+  clearUpdateData: () => void;
 }

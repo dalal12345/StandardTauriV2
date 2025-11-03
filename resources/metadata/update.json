@@ -163,26 +163,28 @@
   "dependencySet": {
     "dependencies": [
       {
-        "id": "dep-react",
-        "name": "React",
+        "id": "dep-nodejs",
+        "name": "Node.js",
+        "type": "nodejs",
         "version": {
-          "online": "18.3.1"
+          "online": "20.10.0"
         },
         "isOptional": false,
         "isUpdateAvailable": false,
-        "updateLink": "https://react.dev",
-        "updateMessage": "Up to date"
+        "updateLink": "https://nodejs.org",
+        "updateMessage": "Recommended for development"
       },
       {
-        "id": "dep-heroui",
-        "name": "@heroui/react",
+        "id": "dep-docker",
+        "name": "Docker",
+        "type": "docker",
         "version": {
-          "online": "2.8.0"
+          "online": "25.0.0"
         },
-        "isOptional": false,
-        "isUpdateAvailable": true,
-        "updateLink": "https://heroui.com",
-        "updateMessage": "Minor update available with bug fixes"
+        "isOptional": true,
+        "isUpdateAvailable": false,
+        "updateLink": "https://docker.com",
+        "updateMessage": "Optional for containerization"
       }
     ]
   }
