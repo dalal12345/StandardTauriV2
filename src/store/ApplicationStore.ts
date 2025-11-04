@@ -3,15 +3,24 @@ import {
   IRemoteUpdateState,
   IRuntimeUpdateState,
 } from "@/interface/metadata/UpdateInterface";
-import { IRuntimeDependency, EDependencyStatus } from "@/interface/metadata/DependencyInterface";
+import {
+  IRuntimeDependency,
+  EDependencyStatus,
+} from "@/interface/metadata/DependencyInterface";
 import { addToast } from "@heroui/react";
 import { getVersion, getName } from "@tauri-apps/api/app";
 import { create } from "zustand";
-import { checkDependencyUpdate, compareVersions } from "@/utils/DependencyDetector";
+import {
+  checkDependencyUpdate,
+  compareVersions,
+} from "@/utils/DependencyDetector";
 
 export const useApplicationStore = create<IApplicationState>((set, get) => ({
   appName: null,
   appVersion: null,
+  githubUrl: "https://github.com/AhmedTrooper",
+  projectUrl: "https://github.com/AhmedTrooper/OSGUI",
+  youtubeUrl: "https://www.youtube.com/@AhmedTrooper",
   updateMetadata: null,
   isCheckingUpdate: false,
   updateCheckError: null,
@@ -53,7 +62,7 @@ export const useApplicationStore = create<IApplicationState>((set, get) => ({
             dep.type,
             dep.version.online
           );
-          
+
           return {
             ...dep,
             version: {
@@ -108,13 +117,16 @@ export const useApplicationStore = create<IApplicationState>((set, get) => ({
         (d) => d.version.status === EDependencyStatus.Error
       );
       const notInstalledDeps = runtimeDependencies.filter(
-        (d) => d.version.status === EDependencyStatus.NotInstalled && !d.isOptional
+        (d) =>
+          d.version.status === EDependencyStatus.NotInstalled && !d.isOptional
       );
 
       if (outdatedDeps.length > 0) {
         addToast({
           title: "Dependency Updates Available",
-          description: `${outdatedDeps.length} ${outdatedDeps.length === 1 ? 'dependency' : 'dependencies'} can be updated`,
+          description: `${outdatedDeps.length} ${
+            outdatedDeps.length === 1 ? "dependency" : "dependencies"
+          } can be updated`,
           color: "warning",
           timeout: 3000,
         });
@@ -123,19 +135,23 @@ export const useApplicationStore = create<IApplicationState>((set, get) => ({
       if (notInstalledDeps.length > 0) {
         addToast({
           title: "Missing Dependencies",
-          description: `${notInstalledDeps.length} required ${notInstalledDeps.length === 1 ? 'dependency is' : 'dependencies are'} not installed`,
+          description: `${notInstalledDeps.length} required ${
+            notInstalledDeps.length === 1 ? "dependency is" : "dependencies are"
+          } not installed`,
           color: "danger",
           timeout: 4000,
         });
       }
 
       if (errorDeps.length > 0) {
-        console.warn("Dependency check errors:", errorDeps.map(d => ({
-          name: d.name,
-          error: d.version.error
-        })));
+        console.warn(
+          "Dependency check errors:",
+          errorDeps.map((d) => ({
+            name: d.name,
+            error: d.version.error,
+          }))
+        );
       }
-
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);

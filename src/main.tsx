@@ -5,7 +5,10 @@ import App from "./App";
 import Home from "./routes/Home";
 import Info from "./routes/Info";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
-import "@fontsource-variable/inter";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
 import Settings from "./routes/Settings";
 import "./index.css";
 

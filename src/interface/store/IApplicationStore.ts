@@ -3,6 +3,9 @@ import { IRuntimeUpdateState } from "../metadata/UpdateInterface";
 export interface IApplicationState {
   appName: string | null;
   appVersion: string | null;
+  githubUrl: string;
+  projectUrl: string;
+  youtubeUrl: string;
   updateMetadata: IRuntimeUpdateState | null;
   isCheckingUpdate: boolean;
   updateCheckError: string | null;

@@ -1,8 +1,16 @@
 import { create } from "zustand";
-import { platform, version, arch, type, locale, hostname, family } from "@tauri-apps/plugin-os";
+import {
+  platform,
+  version,
+  arch,
+  type,
+  locale,
+  hostname,
+  family,
+} from "@tauri-apps/plugin-os";
 import { OsInfoState } from "@/interface/store/IOsInfoStore";
 
-const useOsInfoStore = create<OsInfoState>((set, get) => ({
+const useOsInfoStore = create<OsInfoState>((set) => ({
   osName: null,
   isMobileOS: false,
   platform: "",
@@ -13,7 +21,7 @@ const useOsInfoStore = create<OsInfoState>((set, get) => ({
   hostname: "",
   family: "",
   osFetched: false,
-  
+
   setOSName: (os) => set({ osName: os }),
   setIsMobileOS: (status) => set({ isMobileOS: status }),
   setPlatform: (platformValue) => set({ platform: platformValue }),
@@ -24,21 +32,17 @@ const useOsInfoStore = create<OsInfoState>((set, get) => ({
   setHostname: (hostnameValue) => set({ hostname: hostnameValue }),
   setFamily: (familyValue) => set({ family: familyValue }),
   setOsFetched: (status) => set({ osFetched: status }),
-  
-  detectMobileOS: () => {
-    const osInfoStore = get();
-    const setOsFetched = osInfoStore.setOsFetched;
-    const currentOS = platform();
-    set({ osName: currentOS, platform: currentOS });
-    setOsFetched(true);
 
-    if (currentOS === "android" || currentOS === "ios") {
-      set({ isMobileOS: true });
-    } else {
-      set({ isMobileOS: false });
-    }
+  detectMobileOS: () => {
+    const currentOS = platform();
+    set({
+      osName: currentOS,
+      platform: currentOS,
+      isMobileOS: currentOS === "android" || currentOS === "ios",
+      osFetched: true,
+    });
   },
-  
+
   fetchOsInfo: async () => {
     try {
       const platformName = platform();
@@ -49,37 +53,19 @@ const useOsInfoStore = create<OsInfoState>((set, get) => ({
       const osLocale = await locale();
       const osHostname = await hostname();
 
-      console.log("OS Info Debug:", {
-        platformName,
-        osVersion,
-        osArch,
-        osType,
-        osFamily,
-        osLocale,
-        osHostname,
-      });
-
       set({
-        platform: platformName || "Unknown",
-        version: osVersion || "Unknown",
-        arch: osArch || "Unknown",
-        type: osType || "Unknown",
-        locale: osLocale || "en-US",
-        hostname: osHostname || "Unknown",
-        family: osFamily || "Unknown",
-        osName: platformName || "Unknown",
+        platform: platformName?.trim() || "Unknown",
+        version: osVersion?.trim() || "Unknown",
+        arch: osArch?.trim() || "Unknown",
+        type: osType?.trim() || "Unknown",
+        locale: osLocale?.trim() || "en-US",
+        hostname: osHostname?.trim() || "Unknown",
+        family: osFamily?.trim() || "Unknown",
+        osName: platformName?.trim() || "Unknown",
+        isMobileOS: platformName === "android" || platformName === "ios",
         osFetched: true,
       });
-      
-      // Also set mobile OS status
-      if (platformName === "android" || platformName === "ios") {
-        set({ isMobileOS: true });
-      } else {
-        set({ isMobileOS: false });
-      }
     } catch (error) {
-      console.error("Failed to fetch OS info:", error);
-      // Set default values on error
       set({
         platform: "Unknown",
         version: "Unknown",

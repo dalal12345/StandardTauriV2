@@ -42,3 +42,13 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #6a6a6a;
 }
+
+/* Hide scrollbar for nav with arrows */
+nav::-webkit-scrollbar {
+  display: none;
+}
+
+nav {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

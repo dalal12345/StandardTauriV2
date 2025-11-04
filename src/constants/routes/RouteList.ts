@@ -6,11 +6,12 @@ export const RouteList: RouteListInterface = [
     url: "",
   },
   {
-    name: "Info",
-    url: "info",
-  },
-  {
     name: "Settings",
     url: "settings",
   },
+  {
+    name: "Info",
+    url: "info",
+  },
+  
 ];

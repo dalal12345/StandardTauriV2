@@ -1,25 +1,19 @@
 import { useEffect } from "react";
 import "./App.css";
-import { useContextMenuStore } from "@/store/ContextMenuStore";
 import useOsInfoStore from "./store/OsInfoStore";
 import useThemeStore from "./store/ThemeStore";
+import useMenuBarStore from "./store/MenuBarStore";
 import clsx from "clsx";
 import Sidebar from "./components/navigation/Sidebar";
 import { Outlet } from "react-router-dom";
-import ContextMenuComponent from "./components/contextMenu/ContextMenuComponent";
 
 function App() {
   const dark = useThemeStore((state) => state.dark);
   const setDark = useThemeStore((state) => state.setDark);
-  const detectOS = useOsInfoStore((state) => state.detectMobileOS);
+  const fetchOsInfo = useOsInfoStore((state) => state.fetchOsInfo);
   const isMobileOS = useOsInfoStore((state) => state.isMobileOS);
   const osFetched = useOsInfoStore((state) => state.osFetched);
-  const contextMenuVisible = useContextMenuStore(
-    (state) => state.contextMenuVisible
-  );
-  const setContextMenuVisible = useContextMenuStore(
-    (state) => state.setContextMenuVisible
-  );
+  const position = useMenuBarStore((state) => state.position);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -28,9 +22,9 @@ function App() {
 
   useEffect(() => {
     if (!osFetched) {
-      detectOS();
+      fetchOsInfo();
     }
-  }, [osFetched]);
+  }, [osFetched, fetchOsInfo]);
 
   useEffect(() => {
     if (dark) {
@@ -41,15 +35,6 @@ function App() {
       localStorage.setItem("theme", "light");
     }
   }, [dark]);
-
-  useEffect(() => {
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-      setContextMenuVisible(!contextMenuVisible);
-    };
-    window.addEventListener("contextmenu", handleContextMenu);
-    return () => window.removeEventListener("contextmenu", handleContextMenu);
-  }, [contextMenuVisible]);
 
   return (
     <div
@@ -62,17 +47,19 @@ function App() {
     >
       <Sidebar />
       
-      {/* Main Content Area */}
       <main
         className={clsx(
           "transition-all duration-300 min-h-screen p-6",
-          "ml-16" // Always leave space for sidebar (compact: 64px)
+          {
+            "ml-16": position === "left",
+            "mr-16": position === "right",
+            "mt-16": position === "top",
+            "mb-16": position === "bottom",
+          }
         )}
       >
         <Outlet />
       </main>
-      
-      <ContextMenuComponent />
     </div>
   );
 }

@@ -25,7 +25,7 @@ export default function MenuBar() {
     try {
       await getCurrentWindow().minimize();
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 
@@ -41,7 +41,7 @@ export default function MenuBar() {
         setIsFullScreen(true);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 
@@ -49,7 +49,7 @@ export default function MenuBar() {
     try {
       await getCurrentWindow().close();
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 

@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 import { useApplicationStore } from "@/store/ApplicationStore";
 import useOsInfoStore from "@/store/OsInfoStore";
 import { EDependencyStatus } from "@/interface/metadata/DependencyInterface";
+import { open } from '@tauri-apps/plugin-shell';
 import {
   Monitor,
   Cpu,
@@ -19,6 +21,9 @@ import {
   MapPin,
   Code,
   Calendar,
+  Github,
+  Youtube,
+  Link as LinkIcon,
 } from "lucide-react";
 import clsx from "clsx";
 import {
@@ -33,6 +38,9 @@ import {
 export default function Info() {
   const appName = useApplicationStore((state) => state.appName);
   const appVersion = useApplicationStore((state) => state.appVersion);
+  const githubUrl = useApplicationStore((state) => state.githubUrl);
+  const projectUrl = useApplicationStore((state) => state.projectUrl);
+  const youtubeUrl = useApplicationStore((state) => state.youtubeUrl);
   const updateMetadata = useApplicationStore((state) => state.updateMetadata);
   const isCheckingUpdate = useApplicationStore(
     (state) => state.isCheckingUpdate
@@ -92,15 +100,44 @@ export default function Info() {
     );
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+  };
+
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between">
+    <motion.div 
+      className="p-6 space-y-6 max-w-6xl mx-auto"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div className="flex items-center justify-between" variants={itemVariants}>
         <h1 className="text-3xl font-bold">System Information</h1>
         {getPlatformIcon()}
-      </div>
+      </motion.div>
 
-      {/* Application Info */}
-      <Card className="bg-zinc-50 dark:bg-zinc-800">
+      <motion.div variants={itemVariants}>
+        <Card className="bg-zinc-50 dark:bg-zinc-800">
         <CardHeader className="flex gap-3">
           <Package className="w-6 h-6 text-blue-500" />
           <div className="flex flex-col">
@@ -142,7 +179,7 @@ export default function Info() {
           <Button
             color="primary"
             variant="flat"
-            onClick={handleCheckUpdates}
+            onPress={handleCheckUpdates}
             isLoading={isCheckingUpdate}
             startContent={!isCheckingUpdate && <RefreshCw size={18} />}
           >
@@ -164,9 +201,73 @@ export default function Info() {
               </Button>
             )}
         </CardBody>
-      </Card>
+        </Card>
+      </motion.div>
 
-      {/* Operating System Info */}
+      <motion.div variants={itemVariants}>
+        <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-zinc-800 dark:to-zinc-900 border-2 border-blue-200 dark:border-blue-900">
+        <CardHeader className="flex gap-3">
+          <LinkIcon className="w-6 h-6 text-purple-500" />
+          <div className="flex flex-col">
+            <p className="text-md font-semibold">Connect & Explore</p>
+            <p className="text-small text-default-500">
+              Links and resources
+            </p>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              as={motion.button}
+              onPress={() => open(githubUrl)}
+              className="h-20 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 text-white"
+              startContent={<Github size={24} />}
+              endContent={<ExternalLink size={16} />}
+              whileHover={{ scale: 1.05, transition: { type: "spring", stiffness: 400, damping: 10 } }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex flex-col items-start">
+                <span className="text-xs opacity-80">Visit My</span>
+                <span className="font-bold">GitHub Profile</span>
+              </div>
+            </Button>
+
+            <Button
+              as={motion.button}
+              onPress={() => open(projectUrl)}
+              className="h-20 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white"
+              startContent={<Code size={24} />}
+              endContent={<ExternalLink size={16} />}
+              whileHover={{ scale: 1.05, transition: { type: "spring", stiffness: 400, damping: 10 } }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex flex-col items-start">
+                <span className="text-xs opacity-80">View</span>
+                <span className="font-bold">Project Source</span>
+              </div>
+            </Button>
+
+            <Button
+              as={motion.button}
+              onPress={() => open(youtubeUrl)}
+              className="h-20 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white"
+              startContent={<Youtube size={24} />}
+              endContent={<ExternalLink size={16} />}
+              whileHover={{ scale: 1.05, transition: { type: "spring", stiffness: 400, damping: 10 } }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex flex-col items-start">
+                <span className="text-xs opacity-80">Subscribe to</span>
+                <span className="font-bold">YouTube Channel</span>
+              </div>
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
       <Card className="bg-zinc-50 dark:bg-zinc-800">
         <CardHeader className="flex gap-3">
           <Monitor className="w-6 h-6 text-green-500" />
@@ -243,7 +344,6 @@ export default function Info() {
 
           <Divider className="my-2" />
 
-          {/* Runtime Environment */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex justify-between items-center">
               <span className="text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
@@ -268,10 +368,11 @@ export default function Info() {
           </div>
         </CardBody>
       </Card>
+      </motion.div>
 
-      {/* Dependencies Info */}
       {updateMetadata?.dependencySet.dependencies &&
         updateMetadata.dependencySet.dependencies.length > 0 && (
+          <motion.div variants={itemVariants}>
           <Card className="bg-zinc-50 dark:bg-zinc-800">
             <CardHeader className="flex gap-3">
               <HardDrive className="w-6 h-6 text-purple-500" />
@@ -335,12 +436,12 @@ export default function Info() {
               </div>
             </CardBody>
           </Card>
+          </motion.div>
         )}
 
-      {/* Features & Fixed Errors Summary */}
       {updateMetadata && (
+        <motion.div variants={itemVariants}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Features */}
           {updateMetadata.featureSet.features.length > 0 && (
             <Card className="bg-zinc-50 dark:bg-zinc-800">
               <CardHeader className="flex gap-3">
@@ -379,7 +480,6 @@ export default function Info() {
             </Card>
           )}
 
-          {/* Fixed Errors */}
           {updateMetadata.errorSet.errors.length > 0 && (
             <Card className="bg-zinc-50 dark:bg-zinc-800">
               <CardHeader className="flex gap-3">
@@ -418,7 +518,8 @@ export default function Info() {
             </Card>
           )}
         </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
